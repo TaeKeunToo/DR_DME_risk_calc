@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetic Retinopathy (DR) and Diabetic Macular Edema (DME) Risk Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator-container {
+            width: 800px;
+            height: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .title-frame, .input-frame, .output-frame {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fff;
+        }
+        .title-frame {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .input-frame {
+            font-size: 1em;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .output-frame {
+            font-size: 1em;
+        }
+        .frame-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .input-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-columns {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-column {
+            width: 30%;
+        }
+        .button-group {
+            text-align: center;
+        }
+        .button-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="title-frame">
+            Diabetic Retinopathy (DR) and Diabetic Macular Edema (DME) Risk Calculator
+        </div>
+        <div class="input-frame">
+            <div class="frame-title">Medical History and Laboratory Data</div>
+            <div class="input-columns">
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="age">Age (years)</label>
+                        <input type="number" id="age" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="DM_insulin">DM Insulin (0: No, 1: Yes)</label>
+                        <input type="number" id="DM_insulin" min="0" max="1" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="DM_duration">DM Duration (years)</label>
+                        <input type="number" id="DM_duration" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="DM_po_med">DM PO Med (0: No, 1: Yes)</label>
+                        <input type="number" id="DM_po_med" min="0" max="1" required>
+                    </div>
+                </div>
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="HE_sbp">HE SBP (mmHg)</label>
+                        <input type="number" id="HE_sbp" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_BMI">HE BMI (kg/m²)</label>
+                        <input type="number" id="HE_BMI" step="0.1" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_glu">HE Glu (mg/dL)</label>
+                        <input type="number" id="HE_glu" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_HbA1c">HE HbA1c (%)</label>
+                        <input type="number" id="HE_HbA1c" step="0.1" required>
+                    </div>
+                </div>
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="HE_HB">HE HB (g/dL)</label>
+                        <input type="number" id="HE_HB" step="0.1" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_crea">HE Crea (mg/dL)</label>
+                        <input type="number" id="HE_crea" step="0.01" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_WBC">HE WBC (×10³/μL)</label>
+                        <input type="number" id="HE_WBC" step="0.01" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="HE_Bplt">HE Bplt (×10³/μL)</label>
+                        <input type="number" id="HE_Bplt" required>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button onclick="calculateRisk()">Calculate Risk</button>
+            </div>
+        </div>
+        <div class="output-frame">
+            <div class="frame-title">DR and DME Risk Calculation Results</div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateRisk() {
+            // Retrieve input values
+            const age = parseFloat(document.getElementById('age').value);
+            const DM_insulin = parseFloat(document.getElementById('DM_insulin').value);
+            const DM_duration = parseFloat(document.getElementById('DM_duration').value);
+            const DM_po_med = parseFloat(document.getElementById('DM_po_med').value);
+            const HE_sbp = parseFloat(document.getElementById('HE_sbp').value);
+            const HE_BMI = parseFloat(document.getElementById('HE_BMI').value);
+            const HE_glu = parseFloat(document.getElementById('HE_glu').value);
+            const HE_HbA1c = parseFloat(document.getElementById('HE_HbA1c').value);
+            const HE_HB = parseFloat(document.getElementById('HE_HB').value);
+            const HE_crea = parseFloat(document.getElementById('HE_crea').value);
+            const HE_WBC = parseFloat(document.getElementById('HE_WBC').value);
+            const HE_Bplt = parseFloat(document.getElementById('HE_Bplt').value);
+
+            // Calculate E_DR risk score
+            const logit_E_DR = -1.5172 - 0.2164 * age + 0.2176 * DM_insulin + 0.3405 * DM_duration + 0.2707 * DM_po_med + 0.1800 * HE_sbp - 0.1287 * HE_BMI + 0.1873 * HE_glu + 0.2680 * HE_HbA1c - 0.1204 * HE_HB;
+            const P_E_DR = 1 / (1 + Math.exp(-logit_E_DR));
+            const DR_risk_score = (P_E_DR * 100).toFixed(2);
+            const DR_risk_group = P_E_DR >= 0.212 ? 'High-risk' : 'Low-risk';
+
+            // Calculate E_DME risk score
+            const logit_E_DME = -4.9792 + 0.5702 * DM_duration + 0.3950 * HE_sbp + 0.5650 * HE_HbA1c - 0.4871 * HE_HB + 0.1642 * HE_crea + 0.3647 * HE_WBC - 0.4280 * HE_Bplt;
+            const P_E_DME = 1 / (1 + Math.exp(-logit_E_DME));
+            const DME_risk_score = (P_E_DME * 100).toFixed(2);
+            const DME_risk_group = P_E_DME >= 0.017 ? 'High-risk' : 'Low-risk';
+
+            // Display results
+            document.getElementById('results').innerHTML = `
+                <p>DR Risk Score: ${DR_risk_score}%</p>
+                <p>DR Risk Group: ${DR_risk_group}</p>
+                <p>DME Risk Score: ${DME_risk_score}%</p>
+                <p>DME Risk Group: ${DME_risk_group}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
